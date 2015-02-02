@@ -29,21 +29,24 @@ $(document).ready(function () {
         // New activity for the most recent subject
         var subject = subjects[subjects.length - 1];
         Activity.fromTableRow($(this));
-      } else {
-        // Irrelevant row
-        console.log('Header row');
       }
     });
     console.log('Subjects found: ' + subjects.length);
   }
 });
 
+/**
+ * Represents a UTS subject.
+ */
 function Subject(name, code, semester) {
   if (arguments.length < 3) {
     throw new Error('Too few arguments supplied to create the Subject object.');
   }
 }
 
+/**
+ * Creates a new Subject object from a table row.
+ */
 Subject.fromTableRow = function (row) {
   var content = row.find('b:first');
   
@@ -54,12 +57,18 @@ Subject.fromTableRow = function (row) {
   return new Subject(name, code, semester);
 };
 
+/**
+ * Represents a UTS subject activity.
+ */
 function Activity(type, number, day, startTime, duration, finishTime) {
   if (arguments.length < 5) {
     throw new Error('Too few arguments supplied to create the Activity object.');
   }
 }
 
+/**
+ * Creates a new Activity object from a table row.
+ */
 Activity.fromTableRow = function (row) {
   var cells = row.children().map(function() {return this.innerHTML;});
   
@@ -73,10 +82,16 @@ Activity.fromTableRow = function (row) {
   return new Activity(type, number, day, startTime, duration, finishTime);
 };
 
+/**
+ * Adds minutes to the date object.
+ */
 Date.prototype.addMinutes = function (minutes) {
   return new Date(this.getTime() + parseInt(minutes) * 60000);
 };
 
+/**
+ * Returns the 24hr-formatted time.
+ */
 Date.prototype.get24hrTime = function () {
   return this.getHours() * 100 + this.getMinutes();
 };
