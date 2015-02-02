@@ -23,10 +23,14 @@ $(document).ready(function () {
           isActivityRow   = $(this).attr('bgcolor') === '#eeeeee';
       
       if (isSubjectHeader) {
+        // New subject
         subjects.push(Subject.fromTableRow($(this)));
       } else if (isActivityRow) {
-        console.log('Activity row');
+        // New activity for the most recent subject
+        var subject = subjects[subjects.length - 1];
+        Activity.fromTableRow($(this));
       } else {
+        // Irrelevant row
         console.log('Header row');
       }
     });
@@ -48,10 +52,31 @@ Subject.fromTableRow = function (row) {
       semester = /AUT/.test(content.text()) ? 'autumn' : 'spring';
   
   return new Subject(name, code, semester);
-}
+};
 
-function Activity(type, number, day, startTime, duration) {
+function Activity(type, number, day, startTime, duration, finishTime) {
   if (arguments.length < 5) {
     throw new Error('Too few arguments supplied to create the Activity object.');
   }
 }
+
+Activity.fromTableRow = function (row) {
+  var cells = row.children().map(function() {return this.innerHTML;});
+  
+  var type       = cells[0],
+      number     = cells[1],
+      day        = cells[2],
+      startTime  = cells[3],
+      duration   = cells[4],
+      finishTime = new Date('1/1/2015 ' + startTime).addMinutes(90).get24hrTime();
+  
+  return new Activity(type, number, day, startTime, duration, finishTime);
+};
+
+Date.prototype.addMinutes = function (minutes) {
+  return new Date(this.getTime() + parseInt(minutes) * 60000);
+};
+
+Date.prototype.get24hrTime = function () {
+  return this.getHours() * 100 + this.getMinutes();
+};
