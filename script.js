@@ -28,12 +28,13 @@ $(document).ready(function () {
       } else if (isActivityRow) {
         // New activity for the most recent subject
         var subject = subjects[subjects.length - 1];
-        Activity.fromTableRow($(this));
+        subject.addActivity(Activity.fromTableRow($(this)));
       }
     });
     console.log('Subjects found: ' + subjects.length);
   }
 });
+
 
 /**
  * Represents a UTS subject.
@@ -42,6 +43,24 @@ function Subject(name, code, semester) {
   if (arguments.length < 3) {
     throw new Error('Too few arguments supplied to create the Subject object.');
   }
+  
+  var activities = {};
+  
+  /**
+   * Adds an activity.
+   */
+  function addActivity(activity) {
+    var type = activity.getType();
+    if (typeof activities[type] === 'undefined') {
+      activities[type] = [];
+    }
+    activities[type].push(activity);
+  }
+  
+  return {
+    addActivity: addActivity,
+    getActivities: function () { return activities; }
+  };
 }
 
 /**
@@ -64,6 +83,18 @@ function Activity(type, number, day, startTime, duration, finishTime) {
   if (arguments.length < 5) {
     throw new Error('Too few arguments supplied to create the Activity object.');
   }
+  
+  function hasTimeClashWith(activity) {
+    var timeClashExists = startTime >= activity.getFinishTime() && finishTime >= activity.getStartTime();
+    return timeClashExists;
+  }
+  
+  return {
+    hasTimeClashWith: hasTimeClashWith,
+    getStartTime: function () { return startTime; },
+    getFinishTime: function () { return finishTime; },
+    getType: function () { return type; }
+  };
 }
 
 /**
