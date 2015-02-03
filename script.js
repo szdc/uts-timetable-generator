@@ -51,7 +51,7 @@ $(document).ready(function () {
     } else if (isActivityRow) {
       // New activity under the latest subject
       var subject = subjects[subjects.length - 1];
-      subject.addActivity(Activity.fromTableRow($(this)));
+      subject.addActivity(Activity.fromTableRow($(this), subject));
     }
   }
   
@@ -131,7 +131,7 @@ Subject.fromTableRow = function (row) {
 /**
  * Represents a UTS subject activity.
  */
-function Activity(type, number, day, startTime, duration, finishTime) {
+function Activity(type, number, day, startTime, duration, finishTime, subject) {
   if (arguments.length < 5) {
     throw new Error('Too few arguments supplied to create the Activity object.');
   }
@@ -147,14 +147,15 @@ function Activity(type, number, day, startTime, duration, finishTime) {
     getFinishTime: function () { return finishTime; },
     getType: function () { return type; },
     getNumber: function () { return number; },
-    getDay: function () { return day; }
+    getDay: function () { return day; },
+    getSubject: function () { return subject; }
   };
 }
 
 /**
  * Creates a new Activity object from a table row.
  */
-Activity.fromTableRow = function (row) {
+Activity.fromTableRow = function (row, subject) {
   var cells = row.children().map(function() {return this.innerHTML;});
   
   var type       = cells[0],
@@ -165,7 +166,7 @@ Activity.fromTableRow = function (row) {
       finishTime = new Date('1/1/2015 ' + startTime).addMinutes(90).get24hrTime(),
       startTime = parseInt(startTime.replace(':', ''));
   
-  return new Activity(type, number, day, startTime, duration, finishTime);
+  return new Activity(type, number, day, startTime, duration, finishTime, subject);
 };
 
 
