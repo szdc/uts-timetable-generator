@@ -163,7 +163,7 @@ Activity.fromTableRow = function (row, subject) {
       day        = cells[2],
       startTime  = cells[3],
       duration   = cells[4],
-      finishTime = new Date('1/1/2015 ' + startTime).addMinutes(90).get24hrTime(),
+      finishTime = new Date('1/1/2015 ' + startTime).addMinutes(duration).get24hrTime(),
       startTime = parseInt(startTime.replace(':', ''));
   
   return new Activity(type, number, day, startTime, duration, finishTime, subject);
