@@ -174,6 +174,19 @@ Activity.fromTableRow = function (row, subject) {
   return new Activity(type, number, day, startTime, duration, finishTime, subject);
 };
 
+/**
+ * Compares two activities.
+ */
+Activity.compare = function (a, b) {
+  var days = { "Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3, "Fri": 4, "Sat": 5, "Sun": 6 };
+  
+  if (a.getDay() === b.getDay()) {
+    return a.getStartTime() - b.getStartTime();
+  } else {
+    return days[a.getDay()] - days[b.getDay()];
+  }
+};
+
 
 function Timetable() {}
 
