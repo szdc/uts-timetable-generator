@@ -137,7 +137,7 @@ function Activity(type, number, day, startTime, duration, finishTime, subject) {
   }
   
   function hasTimeClashWith(activity) {
-    var timeClashExists = startTime <= activity.getFinishTime() && finishTime >= activity.getStartTime();
+    var timeClashExists = startTime < activity.getFinishTime() && finishTime > activity.getStartTime();
     return timeClashExists;
   }
   
