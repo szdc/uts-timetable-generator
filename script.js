@@ -141,6 +141,10 @@ function Activity(type, number, day, startTime, duration, finishTime, subject) {
     return timeClashExists;
   }
   
+  function toString() {
+    return day + ' ' + startTime + '-' + finishTime + ': ' + subject.getCode() + ' ' + type + ' ' + number + ' (' + duration + ')';
+  }
+  
   return {
     hasTimeClashWith: hasTimeClashWith,
     getStartTime: function () { return startTime; },
@@ -148,7 +152,8 @@ function Activity(type, number, day, startTime, duration, finishTime, subject) {
     getType: function () { return type; },
     getNumber: function () { return number; },
     getDay: function () { return day; },
-    getSubject: function () { return subject; }
+    getSubject: function () { return subject; },
+    toString: toString
   };
 }
 
