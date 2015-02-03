@@ -12,29 +12,80 @@
 $(document).ready(function () {
   'use strict';
   
-  var subjects = [];
+  var subjects   = [],
+      activities = [];
 
   init();
-
+  
   function init() {
+    // Find the table rows that hold the timetable data
     var table = $('table[cellspacing="1"] tr');
-    table.each(function (index) {
-      var isSubjectHeader = $(this).find('td > a').length > 0,
-          isActivityRow   = $(this).attr('bgcolor') === '#eeeeee';
-      
-      if (isSubjectHeader) {
-        // New subject
-        subjects.push(Subject.fromTableRow($(this)));
-      } else if (isActivityRow) {
-        // New activity for the most recent subject
-        var subject = subjects[subjects.length - 1];
-        subject.addActivity(Activity.fromTableRow($(this)));
-      }
-    });
+    
+    // Process each row
+    table.each(processRow);
     console.log('Subjects found: ' + subjects.length);
+    
+    // Get all activity groups.
+    var activityGroups = getAllActivityGroups();
+    console.log('Total activity groups: ' + activityGroups.length);
+    
+    // Get all timetable combinations
+    var timetableCombinations = cartesianProductOf(activityGroups);
+    console.log('Timetable combinations: ' + timetableCombinations.length);
+    
+    // Get all valid timetable combinations
+    var validTimetables = timetableCombinations.filter(Timetable.isValid);
+    console.log('Valid timetables: ' + validTimetables.length);
+  }
+  
+  /**
+   * Processes a timetable row.
+   */
+  function processRow() {
+    var isSubjectHeader = $(this).find('td > a').length > 0,
+        isActivityRow   = $(this).attr('bgcolor') === '#eeeeee';
+
+    if (isSubjectHeader) {
+      // New subject
+      subjects.push(Subject.fromTableRow($(this)));
+    } else if (isActivityRow) {
+      // New activity under the latest subject
+      var subject = subjects[subjects.length - 1];
+      subject.addActivity(Activity.fromTableRow($(this)));
+    }
+  }
+  
+  /**
+   * Gets an array of all activity groups.
+   */
+  function getAllActivityGroups() {
+    return subjects.reduce(function (activityGroups, subject) {
+      var groups = subject.getActivityGroups(),
+          keys = Object.keys(groups);
+      
+      keys.forEach(function (key) {
+        activityGroups.push(groups[key]);
+      });
+      
+      return activityGroups;
+    }, []);
+  }
+  
+  /**
+   * Returns the cartesian product of N arrays.
+   */
+  function cartesianProductOf(arr) {
+    return arr.reduce(function(a, b) {
+      var ret = [];
+      a.forEach(function(a) {
+        b.forEach(function(b) {
+          ret.push(a.concat([b]));
+        });
+      });
+      return ret;
+    }, [[]]);
   }
 });
-
 
 /**
  * Represents a UTS subject.
@@ -44,22 +95,23 @@ function Subject(name, code, semester) {
     throw new Error('Too few arguments supplied to create the Subject object.');
   }
   
-  var activities = {};
+  var activityGroups = {};
   
   /**
    * Adds an activity.
    */
   function addActivity(activity) {
     var type = activity.getType();
-    if (typeof activities[type] === 'undefined') {
-      activities[type] = [];
+    if (typeof activityGroups[type] === 'undefined') {
+      activityGroups[type] = [];
     }
-    activities[type].push(activity);
+    activityGroups[type].push(activity);
   }
   
   return {
     addActivity: addActivity,
-    getActivities: function () { return activities; }
+    getActivityGroups: function () { return activityGroups; },
+    getCode: function () { return code; }
   };
 }
 
@@ -85,7 +137,7 @@ function Activity(type, number, day, startTime, duration, finishTime) {
   }
   
   function hasTimeClashWith(activity) {
-    var timeClashExists = startTime >= activity.getFinishTime() && finishTime >= activity.getStartTime();
+    var timeClashExists = startTime <= activity.getFinishTime() && finishTime >= activity.getStartTime();
     return timeClashExists;
   }
   
@@ -93,7 +145,9 @@ function Activity(type, number, day, startTime, duration, finishTime) {
     hasTimeClashWith: hasTimeClashWith,
     getStartTime: function () { return startTime; },
     getFinishTime: function () { return finishTime; },
-    getType: function () { return type; }
+    getType: function () { return type; },
+    getNumber: function () { return number; },
+    getDay: function () { return day; }
   };
 }
 
@@ -108,9 +162,42 @@ Activity.fromTableRow = function (row) {
       day        = cells[2],
       startTime  = cells[3],
       duration   = cells[4],
-      finishTime = new Date('1/1/2015 ' + startTime).addMinutes(90).get24hrTime();
+      finishTime = new Date('1/1/2015 ' + startTime).addMinutes(90).get24hrTime(),
+      startTime = parseInt(startTime.replace(':', ''));
   
   return new Activity(type, number, day, startTime, duration, finishTime);
+};
+
+
+function Timetable() {}
+
+/**
+ * Determines if an array of activities forms a valid timetable.
+ */
+Timetable.isValid = function (activities) {
+  var invalidTimes = {
+    "Mon": [], "Tue": [], "Wed": [], "Thu": [], "Fri": [], "Sat": [], "Sun": []
+  };
+
+  var valid = activities.every(function (activity) {
+    var conflicts = invalidTimes[activity.getDay()];
+
+    if (conflicts.length === 0) {
+      conflicts.push(activity);
+      return true;
+    }
+
+    for (var i = 0; i < conflicts.length; i++) {
+      var existingActivity = conflicts[i];
+      if (activity.hasTimeClashWith(existingActivity)) {
+        return false;
+      }
+    }
+    conflicts.push(activity);
+    return true;
+  });
+
+  return valid;
 };
 
 /**
@@ -126,3 +213,4 @@ Date.prototype.addMinutes = function (minutes) {
 Date.prototype.get24hrTime = function () {
   return this.getHours() * 100 + this.getMinutes();
 };
+
