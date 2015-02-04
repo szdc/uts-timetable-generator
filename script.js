@@ -101,11 +101,32 @@ function Subject(name, code, semester) {
    * Adds an activity.
    */
   function addActivity(activity) {
-    var type = activity.getType();
+    var type = activity.getType(),
+        activities = activityGroups[type];
     if (typeof activityGroups[type] === 'undefined') {
       activityGroups[type] = [];
     }
-    activityGroups[type].push(activity);
+    
+    var existingActivity = getExistingActivity(activityGroups[type], activity);
+    if (existingActivity) {
+      existingActivity.addNumbers(activity.getNumbers());
+    } else {
+      activityGroups[type].push(activity);
+    }
+  }
+  
+  /**
+   * Retrieves an activity from the array if it matches the
+   * activity given.
+   */
+  function getExistingActivity(existingActivities, activity) {
+    for (var i = 0; i < existingActivities.length; i++) {
+      var existingActivity = existingActivities[i];
+      if (existingActivity.matches(activity)) {
+        return existingActivity;
+      }
+    }
+    return null;
   }
   
   return {
@@ -131,18 +152,37 @@ Subject.fromTableRow = function (row) {
 /**
  * Represents a UTS subject activity.
  */
-function Activity(type, number, day, startTime, duration, finishTime, subject) {
+function Activity(type, numbers, day, startTime, duration, finishTime, subject) {
   if (arguments.length < 5) {
     throw new Error('Too few arguments supplied to create the Activity object.');
   }
   
+  /**
+   * Determines if two activities clash.
+   */
   function hasTimeClashWith(activity) {
     var timeClashExists = startTime < activity.getFinishTime() && finishTime > activity.getStartTime();
     return timeClashExists;
   }
   
+  /**
+   * Determines if two activities are essentially identical.
+   */
+  function matches(activity) {
+    return type === activity.getType() && day === activity.getDay() && 
+      startTime === activity.getStartTime() && finishTime === activity.getFinishTime() && 
+      subject === activity.getSubject();
+  }
+  
+  /**
+   * Appends activity numbers to the numbers array.
+   */
+  function addNumbers(numbersArray) {
+    numbers = numbers.concat(numbersArray);
+  }
+  
   function toString() {
-    return day + ' ' + startTime + '-' + finishTime + ': ' + subject.getCode() + ' ' + type + ' ' + number + ' (' + duration + ')';
+    return day + ' ' + startTime + '-' + finishTime + ': ' + subject.getCode() + ' ' + type + ' ' + numbers.join(',') + ' (' + duration + ')';
   }
   
   return {
@@ -150,9 +190,11 @@ function Activity(type, number, day, startTime, duration, finishTime, subject) {
     getStartTime: function () { return startTime; },
     getFinishTime: function () { return finishTime; },
     getType: function () { return type; },
-    getNumber: function () { return number; },
+    getNumbers: function () { return numbers; },
     getDay: function () { return day; },
     getSubject: function () { return subject; },
+    matches: matches,
+    addNumbers: addNumbers,
     toString: toString
   };
 }
@@ -164,14 +206,14 @@ Activity.fromTableRow = function (row, subject) {
   var cells = row.children().map(function() {return this.innerHTML;});
   
   var type       = cells[0],
-      number     = cells[1],
+      numbers    = [cells[1]],
       day        = cells[2],
       startTime  = cells[3],
       duration   = cells[4],
       finishTime = new Date('1/1/2015 ' + startTime).addMinutes(duration).get24hrTime(),
       startTime = parseInt(startTime.replace(':', ''));
   
-  return new Activity(type, number, day, startTime, duration, finishTime, subject);
+  return new Activity(type, numbers, day, startTime, duration, finishTime, subject);
 };
 
 /**
