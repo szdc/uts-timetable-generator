@@ -101,11 +101,32 @@ function Subject(name, code, semester) {
    * Adds an activity.
    */
   function addActivity(activity) {
-    var type = activity.getType();
+    var type = activity.getType(),
+        activities = activityGroups[type];
     if (typeof activityGroups[type] === 'undefined') {
       activityGroups[type] = [];
     }
-    activityGroups[type].push(activity);
+    
+    var existingActivity = getExistingActivity(activityGroups[type], activity);
+    if (existingActivity) {
+      existingActivity.addNumbers(activity.getNumbers());
+    } else {
+      activityGroups[type].push(activity);
+    }
+  }
+  
+  /**
+   * Retrieves an activity from the array if it matches the
+   * activity given.
+   */
+  function getExistingActivity(existingActivities, activity) {
+    for (var i = 0; i < existingActivities.length; i++) {
+      var existingActivity = existingActivities[i];
+      if (existingActivity.matches(activity)) {
+        return existingActivity;
+      }
+    }
+    return null;
   }
   
   return {
@@ -136,9 +157,28 @@ function Activity(type, numbers, day, startTime, duration, finishTime, subject) 
     throw new Error('Too few arguments supplied to create the Activity object.');
   }
   
+  /**
+   * Determines if two activities clash.
+   */
   function hasTimeClashWith(activity) {
     var timeClashExists = startTime < activity.getFinishTime() && finishTime > activity.getStartTime();
     return timeClashExists;
+  }
+  
+  /**
+   * Determines if two activities are essentially identical.
+   */
+  function matches(activity) {
+    return type === activity.getType() && day === activity.getDay() && 
+      startTime === activity.getStartTime() && finishTime === activity.getFinishTime() && 
+      subject === activity.getSubject();
+  }
+  
+  /**
+   * Appends activity numbers to the numbers array.
+   */
+  function addNumbers(numbersArray) {
+    numbers = numbers.concat(numbersArray);
   }
   
   function toString() {
@@ -153,6 +193,8 @@ function Activity(type, numbers, day, startTime, duration, finishTime, subject) 
     getNumbers: function () { return numbers; },
     getDay: function () { return day; },
     getSubject: function () { return subject; },
+    matches: matches,
+    addNumbers: addNumbers,
     toString: toString
   };
 }
