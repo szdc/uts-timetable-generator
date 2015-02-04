@@ -31,11 +31,12 @@ $(document).ready(function () {
     
     // Get all timetable combinations
     var timetableCombinations = cartesianProductOf(activityGroups);
+    timetableCombinations = timetableCombinations.map(function (timetable) {
+      return new Timetable(timetable);
+    });
     console.log('Timetable combinations: ' + timetableCombinations.length);
     
-    // Get all valid timetable combinations
-    var validTimetables = timetableCombinations.filter(Timetable.isValid);
-    console.log('Valid timetables: ' + validTimetables.length);
+    var timetableList = new TimetableList(timetableCombinations);
   }
   
   /**
@@ -230,36 +231,91 @@ Activity.compare = function (a, b) {
 };
 
 
-function Timetable() {}
-
-/**
- * Determines if an array of activities forms a valid timetable.
- */
-Timetable.isValid = function (activities) {
-  var invalidTimes = {
-    "Mon": [], "Tue": [], "Wed": [], "Thu": [], "Fri": [], "Sat": [], "Sun": []
+function TimetableList(timetables) {
+  if (arguments.length < 1) {
+    throw new Error('Too few arguments supplied to create the TimetableList object.');
+  }
+  
+  // Get all valid timetable combinations
+  timetables = timetables.filter(function (timetable) {
+    return timetable.isValid();
+  });
+  console.log('Valid timetables: ' + timetables.length);
+  
+  function filterByDays(numberOfdays, exact) {
+    exact = exact || false;
+    
+    return timetables.filter(function (timetable) {
+      var days = timetable.getDays();
+      
+      if (exact) {
+        return days.length === numberOfdays;
+      } else {
+        return days.length <= numberOfdays;
+      }
+    });
+  }
+  
+  return {
+    getTimetables: function () { return timetables; },
+    filterByDays: filterByDays
   };
+}
 
-  var valid = activities.every(function (activity) {
-    var conflicts = invalidTimes[activity.getDay()];
 
-    if (conflicts.length === 0) {
+function Timetable(activities) {
+  /**
+   * Returns an array of days that the timetable spans.
+   */
+  function getDays() {
+    return activities.reduce(function (days, activity) {
+      var day = activity.getDay();
+      
+      if (days.indexOf(day) === -1) {
+        days.push(day);
+      }
+      
+      return days;
+    }, []);
+  }
+  
+  function isValid() {
+    var invalidTimes = {
+      "Mon": [], "Tue": [], "Wed": [], "Thu": [], "Fri": [], "Sat": [], "Sun": []
+    };
+
+    var valid = activities.every(function (activity) {
+      var conflicts = invalidTimes[activity.getDay()];
+
+      if (conflicts.length === 0) {
+        conflicts.push(activity);
+        return true;
+      }
+
+      for (var i = 0; i < conflicts.length; i++) {
+        var existingActivity = conflicts[i];
+        if (activity.hasTimeClashWith(existingActivity)) {
+          return false;
+        }
+      }
       conflicts.push(activity);
       return true;
-    }
+    });
 
-    for (var i = 0; i < conflicts.length; i++) {
-      var existingActivity = conflicts[i];
-      if (activity.hasTimeClashWith(existingActivity)) {
-        return false;
-      }
-    }
-    conflicts.push(activity);
-    return true;
-  });
-
-  return valid;
-};
+    return valid;
+  }
+  
+  function sort(compareFn) {
+    activities.sort(compareFn);
+  }
+  
+  return {
+    getActvities: function () { return activities; },
+    getDays: getDays,
+    isValid: isValid,
+    sort: sort
+  };
+}
 
 /**
  * Adds minutes to the date object.
