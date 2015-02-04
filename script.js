@@ -131,7 +131,7 @@ Subject.fromTableRow = function (row) {
 /**
  * Represents a UTS subject activity.
  */
-function Activity(type, number, day, startTime, duration, finishTime, subject) {
+function Activity(type, numbers, day, startTime, duration, finishTime, subject) {
   if (arguments.length < 5) {
     throw new Error('Too few arguments supplied to create the Activity object.');
   }
@@ -142,7 +142,7 @@ function Activity(type, number, day, startTime, duration, finishTime, subject) {
   }
   
   function toString() {
-    return day + ' ' + startTime + '-' + finishTime + ': ' + subject.getCode() + ' ' + type + ' ' + number + ' (' + duration + ')';
+    return day + ' ' + startTime + '-' + finishTime + ': ' + subject.getCode() + ' ' + type + ' ' + numbers.join(',') + ' (' + duration + ')';
   }
   
   return {
@@ -150,7 +150,7 @@ function Activity(type, number, day, startTime, duration, finishTime, subject) {
     getStartTime: function () { return startTime; },
     getFinishTime: function () { return finishTime; },
     getType: function () { return type; },
-    getNumber: function () { return number; },
+    getNumbers: function () { return numbers; },
     getDay: function () { return day; },
     getSubject: function () { return subject; },
     toString: toString
@@ -164,14 +164,14 @@ Activity.fromTableRow = function (row, subject) {
   var cells = row.children().map(function() {return this.innerHTML;});
   
   var type       = cells[0],
-      number     = cells[1],
+      numbers    = [cells[1]],
       day        = cells[2],
       startTime  = cells[3],
       duration   = cells[4],
       finishTime = new Date('1/1/2015 ' + startTime).addMinutes(duration).get24hrTime(),
       startTime = parseInt(startTime.replace(':', ''));
   
-  return new Activity(type, number, day, startTime, duration, finishTime, subject);
+  return new Activity(type, numbers, day, startTime, duration, finishTime, subject);
 };
 
 /**
