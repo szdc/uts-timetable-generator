@@ -236,12 +236,16 @@ function TimetableList(timetables) {
     throw new Error('Too few arguments supplied to create the TimetableList object.');
   }
   
-  // Get all valid timetable combinations
+  // Filter the list to only valid timetable combinations
   timetables = timetables.filter(function (timetable) {
     return timetable.isValid();
   });
   console.log('Valid timetables: ' + timetables.length);
   
+  /**
+   * Filters the timetable list to those that span
+   * the specified number of days (or less).
+   */
   function filterByDays(numberOfdays, exact) {
     exact = exact || false;
     
@@ -256,9 +260,19 @@ function TimetableList(timetables) {
     });
   }
   
+  /**
+   * Sorts the timetables by the total number of hours.
+   */
+  function sortByTotalHours() {
+    timetables.sort(function (a, b) {
+      return a.getHours() - b.getHours();
+    });
+  }
+  
   return {
     getTimetables: function () { return timetables; },
-    filterByDays: filterByDays
+    filterByDays: filterByDays,
+    sortByTotalHours: sortByTotalHours
   };
 }
 
@@ -305,6 +319,36 @@ function Timetable(activities) {
     return valid;
   }
   
+  /**
+   * Calculates the total number of hours spent at uni.
+   */
+  function getHours() {
+    var hoursByDay = activities.reduce(function (days, activity) {
+      var day = activity.getDay(),
+          start  = activity.getStartTime() / 100,
+          finish = activity.getFinishTime() / 100;
+      
+      if (typeof days[day] === 'undefined') {
+        days[day] = { start: start, finish: finish };
+      } else {
+        if (start < days[day].start) days[day].start = start;
+        if (finish > days[day].finish) days[day].finish = finish;
+      }
+      
+      return days;
+    }, {});
+    
+    var hours = Object.keys(hoursByDay).reduce(function (totalHours, day) {
+      totalHours += (hoursByDay[day].finish - hoursByDay[day].start);
+      return totalHours;
+    }, 0);
+    
+    return hours;
+  }
+  
+  /**
+   * Sorts the timetable.
+   */
   function sort(compareFn) {
     activities.sort(compareFn);
   }
@@ -312,6 +356,7 @@ function Timetable(activities) {
   return {
     getActvities: function () { return activities; },
     getDays: getDays,
+    getHours: getHours,
     isValid: isValid,
     sort: sort
   };
