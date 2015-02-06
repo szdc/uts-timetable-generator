@@ -230,7 +230,9 @@ Activity.compare = function (a, b) {
   }
 };
 
-
+/**
+ * Represents a list of Timetable objects.
+ */
 function TimetableList(timetables) {
   if (arguments.length < 1) {
     throw new Error('Too few arguments supplied to create the TimetableList object.');
@@ -243,21 +245,10 @@ function TimetableList(timetables) {
   console.log('Valid timetables: ' + timetables.length);
   
   /**
-   * Filters the timetable list to those that span
-   * the specified number of days (or less).
+   * Returns a filtered array of timetables.
    */
-  function filterByDays(numberOfdays, exact) {
-    exact = exact || false;
-    
-    return timetables.filter(function (timetable) {
-      var days = timetable.getDays();
-      
-      if (exact) {
-        return days.length === numberOfdays;
-      } else {
-        return days.length <= numberOfdays;
-      }
-    });
+  function filter(filterMethod, args) {
+    return timetables.filter(filterMethod, args);
   }
   
   /**
@@ -269,10 +260,24 @@ function TimetableList(timetables) {
   
   return {
     getTimetables: function () { return timetables; },
-    filterByDays: filterByDays,
+    filter: filter,
     sort: sort
   };
 }
+
+/**
+ * A static object of common filtering methods.
+ */
+TimetableList.FilterBy = {
+  DaysAtUni: function (timetable) {
+    if (typeof this.days === 'undefined') {
+      throw new Error('Days property missing for filter.');
+    }
+      
+    var daysAtUni = timetable.getDays().length;
+    return this.exact ? daysAtUni === this.days : daysAtUni <= this.days;
+  }
+};
 
 /**
  * A static object of common sorting methods.
@@ -285,7 +290,7 @@ TimetableList.SortBy = {
   HoursOnCampus: function (a, b) {
     return a.getHours() - b.getHours();
   }
-}
+};
 
 
 function Timetable(activities) {
