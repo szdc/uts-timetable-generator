@@ -261,19 +261,30 @@ function TimetableList(timetables) {
   }
   
   /**
-   * Sorts the timetables by the total number of hours.
+   * Sorts the timetables.
    */
-  function sortByTotalHours() {
-    timetables.sort(function (a, b) {
-      return a.getHours() - b.getHours();
-    });
+  function sort(compareMethod) {
+    timetables.sort(compareMethod);
   }
   
   return {
     getTimetables: function () { return timetables; },
     filterByDays: filterByDays,
-    sortByTotalHours: sortByTotalHours
+    sort: sort
   };
+}
+
+/**
+ * A static object of common sorting methods.
+ */
+TimetableList.SortBy = {
+  /**
+   * Sorts by the total number of hours spent on campus.
+   * Hours spent each day = end of last class - start of first class
+   */
+  HoursOnCampus: function (a, b) {
+    return a.getHours() - b.getHours();
+  }
 }
 
 
