@@ -341,8 +341,8 @@ function Timetable(activities) {
   function getHours() {
     var hoursByDay = activities.reduce(function (days, activity) {
       var day = activity.getDay(),
-          start  = activity.getStartTime() / 100,
-          finish = activity.getFinishTime() / 100;
+          start  = activity.getStartTime(),
+          finish = activity.getFinishTime();
       
       if (typeof days[day] === 'undefined') {
         days[day] = { start: start, finish: finish };
@@ -355,11 +355,25 @@ function Timetable(activities) {
     }, {});
     
     var hours = Object.keys(hoursByDay).reduce(function (totalHours, day) {
-      totalHours += (hoursByDay[day].finish - hoursByDay[day].start);
+      totalHours += getTimeDiffInHours(hoursByDay[day].finish, hoursByDay[day].start);
       return totalHours;
     }, 0);
     
     return hours;
+  }
+  
+  function getTimeDiffInHours(startTime, finishTime) {
+    startTime = getHoursSinceMidnight(startTime);
+    finishTime = getHoursSinceMidnight(finishTime);
+    return startTime - finishTime;
+  }
+  
+  function getHoursSinceMidnight(time) {
+    var time    = time / 100,
+        hours   = Math.floor(time),
+        minutes = (time - hours) / 0.6;
+
+    return (hours + minutes).toFixed(1);
   }
   
   /**
