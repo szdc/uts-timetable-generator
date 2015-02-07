@@ -285,6 +285,24 @@ TimetableList.FilterBy = {
       
     var daysAtUni = Object.keys(timetable.getDays()).length;
     return this.exact ? daysAtUni === this.days : daysAtUni <= this.days;
+  },
+
+  /**
+   * Filters to only timetables that start later than the
+   * specified time.
+   *
+   * Required: The 2nd parameter of the filter method must
+   * contain an object with the following properties:
+   *  time  {Number}  The earliest time an activity can start
+   */
+  LateStarts: function (timetable) {
+    if (typeof this.time === 'undefined') {
+      throw new Error('Time property missing for filter.');
+    }
+
+    return timetable.getActivities().every(function (activity) {
+      return activity.getStartTime() >= this.time;
+    }, this);
   }
 };
 
