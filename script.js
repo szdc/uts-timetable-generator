@@ -384,7 +384,7 @@ function Timetable(activities) {
   }
   
   return {
-    getActvities: function () { return activities; },
+    getActivities: function () { return activities; },
     getDays: getDays,
     getHours: getHours,
     isValid: isValid,
