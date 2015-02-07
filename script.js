@@ -269,6 +269,15 @@ function TimetableList(timetables) {
  * A static object of common filtering methods.
  */
 TimetableList.FilterBy = {
+  /**
+   * Filters by the number of days the timetable spans.
+   *
+   * Required: The 2nd parameter of the filter method must
+   * contain an object with the following properties:
+   *  days  {Number}  The maximum allowable number of days
+   *  exact {Boolean} Whether or not to also include timetables
+   *                  with less days in the results.
+   */
   DaysAtUni: function (timetable) {
     if (typeof this.days === 'undefined') {
       throw new Error('Days property missing for filter.');
