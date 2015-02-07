@@ -309,6 +309,10 @@ function Timetable(activities) {
     }, []);
   }
   
+  /**
+   * Determines if a timetable is valid.
+   * There must be no activity clashes to return true.
+   */
   function isValid() {
     var invalidTimes = {
       "Mon": [], "Tue": [], "Wed": [], "Thu": [], "Fri": [], "Sat": [], "Sun": []
@@ -362,12 +366,18 @@ function Timetable(activities) {
     return hours;
   }
   
+  /**
+   * Gets the difference between two times in hours.
+   */
   function getTimeDiffInHours(startTime, finishTime) {
     startTime = getHoursSinceMidnight(startTime);
     finishTime = getHoursSinceMidnight(finishTime);
     return startTime - finishTime;
   }
   
+  /**
+   * Gets the number of hours passed since midnight.
+   */
   function getHoursSinceMidnight(time) {
     var time    = time / 100,
         hours   = Math.floor(time),
