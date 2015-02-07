@@ -283,7 +283,7 @@ TimetableList.FilterBy = {
       throw new Error('Days property missing for filter.');
     }
       
-    var daysAtUni = timetable.getDays().length;
+    var daysAtUni = Object.keys(timetable.getDays()).length;
     return this.exact ? daysAtUni === this.days : daysAtUni <= this.days;
   }
 };
@@ -304,18 +304,25 @@ TimetableList.SortBy = {
 
 function Timetable(activities) {
   /**
-   * Returns an array of days that the timetable spans.
+   * Returns an object of days and times that the timetable spans.
    */
   function getDays() {
-    return activities.reduce(function (days, activity) {
-      var day = activity.getDay();
+    var dayInfo = activities.reduce(function (days, activity) {
+      var day = activity.getDay(),
+          start  = activity.getStartTime(),
+          finish = activity.getFinishTime();
       
-      if (days.indexOf(day) === -1) {
-        days.push(day);
+      if (typeof days[day] === 'undefined') {
+        days[day] = { start: start, finish: finish };
+      } else {
+        if (start < days[day].start) days[day].start = start;
+        if (finish > days[day].finish) days[day].finish = finish;
       }
       
       return days;
-    }, []);
+    }, {});
+    
+    return dayInfo;
   }
   
   /**
@@ -352,23 +359,10 @@ function Timetable(activities) {
    * Calculates the total number of hours spent at uni.
    */
   function getHours() {
-    var hoursByDay = activities.reduce(function (days, activity) {
-      var day = activity.getDay(),
-          start  = activity.getStartTime(),
-          finish = activity.getFinishTime();
-      
-      if (typeof days[day] === 'undefined') {
-        days[day] = { start: start, finish: finish };
-      } else {
-        if (start < days[day].start) days[day].start = start;
-        if (finish > days[day].finish) days[day].finish = finish;
-      }
-      
-      return days;
-    }, {});
+    var dayInfo = getDays();
     
-    var hours = Object.keys(hoursByDay).reduce(function (totalHours, day) {
-      totalHours += getTimeDiffInHours(hoursByDay[day].finish, hoursByDay[day].start);
+    var hours = Object.keys(dayInfo).reduce(function (totalHours, day) {
+      totalHours += getTimeDiffInHours(dayInfo[day].finish, dayInfo[day].start);
       return totalHours;
     }, 0);
     
