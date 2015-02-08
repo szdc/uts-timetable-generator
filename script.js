@@ -328,6 +328,29 @@ TimetableList.FilterBy = {
         return activity.getFinishTime() <= this.time;
       }
     }, this);
+  },
+  
+  /**
+   * Filters to only timetables that have classes on the days
+   * specified.
+   *
+   * Required: The 2nd parameter of the filter method must
+   * contain an object with the following properties:
+   *  days  {Array}  An array of 3-letter day names with the
+   *                 first letter capitalised
+   */ 
+  Days: function (timetable) {
+    if (typeof this.days === 'undefined') {
+      throw new Error('Days property missing for filter.');
+    }
+    
+    var timetableDays = Object.keys(timetable.getDays());
+    for (var i = 0; i < timetableDays.length; i++) {
+      if (this.days.indexOf(timetableDays[i]) === -1) {
+        return false;
+      }
+    }
+    return true;
   }
 };
 
