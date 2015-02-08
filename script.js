@@ -288,20 +288,25 @@ TimetableList.FilterBy = {
   },
 
   /**
-   * Filters to only timetables that start later than the
-   * specified time.
+   * Filters to only timetables that always start later or finish 
+   * earlier than the specified time.
    *
    * Required: The 2nd parameter of the filter method must
    * contain an object with the following properties:
    *  time  {Number}  The earliest time an activity can start
-   */
-  LateStarts: function (timetable) {
-    if (typeof this.time === 'undefined') {
-      throw new Error('Time property missing for filter.');
+   *  constraint {String} 'start' for later than; 'finish' for earlier than
+   */ 
+  TimeConstraint: function (timetable) {
+    if (typeof this.time === 'undefined' || typeof this.constraint === 'undefined') {
+      throw new Error('Time or Constraint property missing for filter.');
     }
-
+    
     return timetable.getActivities().every(function (activity) {
-      return activity.getStartTime() >= this.time;
+      if (this.constraint === 'start') {
+        return activity.getStartTime() >= this.time;
+      } else {
+        return activity.getFinishTime() <= this.time;
+      }
     }, this);
   }
 };
