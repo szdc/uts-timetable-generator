@@ -294,17 +294,17 @@ TimetableList.FilterBy = {
    *
    * Required: The 2nd parameter of the filter method must
    * contain an object with the following properties:
-   *  days  {Number}  The maximum allowable number of days
+   *  count {Number}  The maximum allowable number of days
    *  exact {Boolean} Whether or not to also include timetables
    *                  with less days in the results.
    */
   NumberOfDays: function (timetable) {
-    if (typeof this.days === 'undefined') {
+    if (typeof this.count === 'undefined') {
       throw new Error('Days property missing for filter.');
     }
       
     var numberOfDays = Object.keys(timetable.getDays()).length;
-    return this.exact ? numberOfDays === this.days : numberOfDays <= this.days;
+    return this.exact ? numberOfDays === this.count : numberOfDays <= this.count;
   },
 
   /**
