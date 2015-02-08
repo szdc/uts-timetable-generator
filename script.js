@@ -252,6 +252,25 @@ function TimetableList(timetables) {
   }
   
   /**
+   * Returns an array of timetables that match multiple filters.
+   *
+   * @param filters {Array<FilterInfo>} 
+   * An array of FilterInfo objects
+   */
+  function filterMany(filters) {
+    return timetables.filter(function (timetable) {
+      for (var i = 0; i < filters.length; i++) {
+        var filter = filters[i];
+        var result = filter.method.call(filter.options, timetable);
+        if (!filter.method.call(filter.options, timetable)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+  
+  /**
    * Sorts the timetables.
    */
   function sort(compareMethod) {
@@ -261,6 +280,7 @@ function TimetableList(timetables) {
   return {
     getTimetables: function () { return timetables; },
     filter: filter,
+    filterMany: filterMany,
     sort: sort
   };
 }
@@ -323,6 +343,14 @@ TimetableList.SortBy = {
     return a.getHours() - b.getHours();
   }
 };
+
+/**
+ * Contains the method and options for a filter.
+ */
+function FilterInfo(method, options) {
+  this.method = method;
+  this.options = options;
+}
 
 
 function Timetable(activities) {
