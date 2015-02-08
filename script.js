@@ -298,13 +298,13 @@ TimetableList.FilterBy = {
    *  exact {Boolean} Whether or not to also include timetables
    *                  with less days in the results.
    */
-  DaysAtUni: function (timetable) {
+  NumberOfDays: function (timetable) {
     if (typeof this.days === 'undefined') {
       throw new Error('Days property missing for filter.');
     }
       
-    var daysAtUni = Object.keys(timetable.getDays()).length;
-    return this.exact ? daysAtUni === this.days : daysAtUni <= this.days;
+    var numberOfDays = Object.keys(timetable.getDays()).length;
+    return this.exact ? numberOfDays === this.days : numberOfDays <= this.days;
   },
 
   /**
