@@ -10,7 +10,6 @@ getSubjectList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], function(err, subjects) {
     console.log(err);
     return;
   }
-  console.log('Subject list downloaded!');
   subjects.map(function (subject) {
     var code = /^\d+/.exec(subject.value)[0],
         name = /: (.+)/.exec(subject.content)[1].trim();
@@ -20,7 +19,7 @@ getSubjectList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], function(err, subjects) {
   subjects.sort(function (a, b) {
     return a.value.localeCompare(b.value);
   })
-  fs.writeFile('timetableSubjects.json', JSON.stringify(subjects), function (err) {
+  fs.writeFile('subjects.json', JSON.stringify(subjects), function (err) {
     if (err) {
       console.log(err);
     } else {
