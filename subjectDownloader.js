@@ -10,16 +10,17 @@ getSubjectList([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], function(err, subjects) {
     console.log(err);
     return;
   }
-  subjects.map(function (subject) {
+  subjects = subjects.map(function (subject) {
     var code = /^\d+/.exec(subject.value)[0],
         name = /: (.+)/.exec(subject.content)[1].trim();
     subject.name = code + ': ' + name;
     delete subject.content;
+    return subject;
   });
   subjects.sort(function (a, b) {
     return a.value.localeCompare(b.value);
   })
-  fs.writeFile('subjects.json', JSON.stringify(subjects), function (err) {
+  fs.writeFile('subjects-new.json', JSON.stringify(subjects), function (err) {
     if (err) {
       console.log(err);
     } else {
