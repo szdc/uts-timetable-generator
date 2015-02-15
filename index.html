@@ -1,0 +1,65 @@
+<!doctype html>
+<html ng-app="Timetabler">
+  <head>
+    <meta charset="utf-8">
+    <title>UTS Timetable Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>UTS Timetable Generator</h1>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <h3>Semester</h3>
+          <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-primary active">
+              <input type="radio" name="semester" id="autumn" autocomplete="off" checked>Autumn
+            </label>
+            <label class="btn btn-primary">
+              <input type="radio" name="semester" id="spring" autocomplete="off">Spring
+            </label>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div ng-controller="homeController">
+            <h3>Subjects</h3>
+            <form ng-submit="addSubject();">
+              <div class="input-group">
+                <input type="text" 
+                       ng-model="selectedSubject" 
+                       typeahead="subject as subject.name for subject in subjects | filter:{name: $viewValue, value: 'AUT'} | limitTo:8" 
+                       class="form-control"
+                       autocomplete="false" 
+                       placeholder="Search for a subject...">
+                <span class="input-group-btn">
+                  <input class="btn btn-default" type="submit" value="Add subject">
+                </span>
+              </div>
+            </form>
+            <br>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="subject in selectedSubjects">
+                {{ subject.name }}
+                <span class="pull-right">
+                  <a href="#"><span class="glyphicon glyphicon-trash"</span></a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.9.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/controllers/homeController.js"></script>
+  </body>
+</html>
