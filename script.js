@@ -51,8 +51,11 @@ $(document).ready(function () {
       subjects.push(Subject.fromTableRow($(this)));
     } else if (isActivityRow) {
       // New activity under the latest subject
-      var subject = subjects[subjects.length - 1];
-      subject.addActivity(Activity.fromTableRow($(this), subject));
+      var subject  = subjects[subjects.length - 1],
+          activity = Activity.fromTableRow($(this), subject);
+      if (activity !== null) {
+        subject.addActivity(activity);
+      }
     }
   }
   
@@ -202,9 +205,21 @@ function Activity(type, numbers, day, startTime, duration, finishTime, subject) 
 
 /**
  * Creates a new Activity object from a table row.
+ *
+ * @param {jQuery Object} row
+ * The row object to process.
+ *
+ * @param {Subject} subject
+ * The subject that the activity belongs to.
+ *
+ * @returns {Activity|null}
+ * An Activity object representing the activity, or null if the
+ * subject is a U:PASS session.
  */
 Activity.fromTableRow = function (row, subject) {
   var cells = row.children().map(function() {return this.innerHTML;});
+  
+  if (cells[0].toLowerCase().indexOf('ups') !== -1) return null;
   
   var type       = cells[0],
       numbers    = [cells[1]],
@@ -254,7 +269,7 @@ function TimetableList(timetables) {
   /**
    * Returns an array of timetables that match multiple filters.
    *
-   * @param filters {Array<FilterInfo>} 
+   * @param {Array<FilterInfo>} filters
    * An array of FilterInfo objects
    */
   function filterMany(filters) {
@@ -294,8 +309,8 @@ TimetableList.FilterBy = {
    *
    * Required: The 2nd parameter of the filter method must
    * contain an object with the following properties:
-   *  count {Number}  The maximum allowable number of days
-   *  exact {Boolean} Whether or not to also include timetables
+   *  {Number}  count The maximum allowable number of days
+   *  {Boolean} exact Whether or not to also include timetables
    *                  with less days in the results.
    */
   NumberOfDays: function (timetable) {
@@ -313,8 +328,8 @@ TimetableList.FilterBy = {
    *
    * Required: The 2nd parameter of the filter method must
    * contain an object with the following properties:
-   *  time  {Number}  The earliest time an activity can start
-   *  constraint {String} 'start' for later than; 'finish' for earlier than
+   *  {Number} time       The earliest time an activity can start
+   *  {String} constraint 'start' for later than; 'finish' for earlier than
    */ 
   TimeConstraint: function (timetable) {
     if (typeof this.time === 'undefined' || typeof this.constraint === 'undefined') {
@@ -336,8 +351,8 @@ TimetableList.FilterBy = {
    *
    * Required: The 2nd parameter of the filter method must
    * contain an object with the following properties:
-   *  days  {Array}  An array of 3-letter day names with the
-   *                 first letter capitalised
+   *  {Array} days An array of 3-letter day names with the 
+   *               first letter capitalised
    */ 
   Days: function (timetable) {
     if (typeof this.days === 'undefined') {
