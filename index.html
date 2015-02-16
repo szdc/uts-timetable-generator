@@ -20,10 +20,10 @@
             <h3>Semester</h3>
             <div class="btn-group" data-toggle="buttons">
               <label class="btn btn-primary active">
-                <input type="radio" name="semester" id="autumn" autocomplete="off" checked>Autumn
+                <input type="radio" name="semester" id="autumn" checked>Autumn
               </label>
               <label class="btn btn-primary">
-                <input type="radio" name="semester" id="spring" autocomplete="off">Spring
+                <input type="radio" name="semester" id="spring">Spring
               </label>
             </div>
           </div>
@@ -72,8 +72,14 @@
         </div>
       </div>
       
-      <div class="row">
-
+      <div class="row text-center">
+        <button type="button" class="btn btn-default" ng-click="loadTimetables($event)" data-loading-text="Loading">Load timetables</button>
+      </div>
+      
+      <div class="row timetables">
+        <div class="col-md-12">
+          <h3>Timetables</h3>
+        </div>
       </div>
     </div>
     
