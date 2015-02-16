@@ -34,7 +34,7 @@ h3 {
 .btn-primary.active {
   background-color: #0099CC;
 }
-.glyphicon-trash {
+.glyphicon-trash, .fa-trash {
   color: #e80101;
 }
 .list-group-item {
@@ -42,4 +42,7 @@ h3 {
 }
 .list-group-item:hover {
   background-color: #f6f6f6;
+}
+.subject-list {
+  margin-top: 15px;
 }

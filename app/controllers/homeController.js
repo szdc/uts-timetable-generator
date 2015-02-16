@@ -10,12 +10,20 @@ app.controller('homeController', function homeController($scope, $http) {
     
     if (subList.indexOf(subNew) !== -1) {
       console.log('Duplicate subject');
-      return;
+    } else {
+      $scope.selectedSubjects.push($scope.selectedSubject);
+      console.log('Subjects: ' + $scope.selectedSubjects.length);
     }
     
-    $scope.selectedSubjects.push($scope.selectedSubject);
-    console.log('Subjects: ' + $scope.selectedSubjects.length);
+    $scope.selectedSubject = undefined;
   };
+  
+  $scope.removeSubject = function (listItem) {
+    var index = $scope.selectedSubjects.indexOf(listItem.subject);
+    if (index > -1) {
+      $scope.selectedSubjects.splice(index, 1);
+    }
+  }
   
   $http.get('subjects.json')
     .then(function (res) {
