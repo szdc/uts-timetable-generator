@@ -64,7 +64,7 @@
               <li class="list-group-item" ng-repeat="subject in selectedSubjects">
                 {{ subject.name }}
                 <span class="pull-right">
-                  <a href="" ng-click="removeSubject(this)"><i class="fa fa-trash"></i></a>
+                  <a href="" ng-click="removeSubject(subject)"><i class="fa fa-trash"></i></a>
                 </span>
               </li>
             </ul>
@@ -90,5 +90,7 @@
     <script src="app/app.js"></script>
     <script src="app/controllers/homeController.js"></script>
     <script src="app/directives/buttonsRadioDirective.js"></script>
+    <script src="app/services/timetableService.js"></script>
+    <script src="app/services/utsYqlService.js"></script>
   </body>
 </html>

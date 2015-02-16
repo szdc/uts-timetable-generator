@@ -1,6 +1,9 @@
 'use strict';
 
-app.controller('homeController', function homeController($scope, $http) {
+app.controller('homeController', function ($scope, $http, timetabler, utsYqlService) {
+  var TimetableList = timetabler.TimetableList,
+      FilterInfo    = timetabler.FilterInfo;
+  
   $scope.selectedSubject  = undefined;
   $scope.selectedSubjects = [];
   $scope.prefs = {
@@ -37,36 +40,40 @@ app.controller('homeController', function homeController($scope, $http) {
   }
   
   $scope.removeSubject = function (listItem) {
-    var index = $scope.selectedSubjects.indexOf(listItem.subject);
+    var index = $scope.selectedSubjects.indexOf(listItem);
     if (index > -1) {
       $scope.selectedSubjects.splice(index, 1);
     }
   };
   
   $scope.loadTimetables = function ($event) {
-    var yql =   'https://query.yahooapis.com/v1/public/yql?format=json&' +
-                'q={query}&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys',
-        query = 'select * from htmlpost where ' + 
-                'url="https://mysubjects.uts.edu.au/aplus2015/aptimetable?' +
-                'fun=unit_select&flat_timetable=yes" ' +
-                'and postdata="student_set={subjects}" ' +
-                'and xpath="//table[@cellspacing=\'1\']/tr"',
-        subjects = $scope.selectedSubjects,
-        subjectQueryString = subjects.reduce(function (queryString, subject) {
-          return queryString + '&assigned=' + subject.value;
-        }, '');
-    
-    query = query.replace('{subjects}', subjectQueryString);
-    var url = yql.replace('{query}', encodeURIComponent(query));
-    
-    $http.get(url)
-      .then(function (res) {
-        console.log(res.data);
-      }, function (err) {
-        console.log(err);
-      }
-    );
+    var subjects = $scope.selectedSubjects;
+    utsYqlService.getTimetableList(subjects, onTimetablesLoaded);
   };
+  
+  function onTimetablesLoaded(timetableList) {
+    timetableList.sort(TimetableList.SortBy.HoursOnCampus);
+    
+    var filters = getPreferenceFilters();
+    
+    var filteredByDays = timetableList.filterMany(filters);
+    console.log('Timetables spanning ' + 
+                $scope.prefs.days.count + 
+                ' days' +
+                ($scope.prefs.days.exact ? ' exactly: ' : ' or less: ') +
+                filteredByDays.length
+    );
+  }
+  
+  function getPreferenceFilters() {
+    return [getDays()];
+    
+    function getDays() {
+      var pref = $scope.prefs.days;
+      return new FilterInfo(TimetableList.FilterBy.NumberOfDays,
+                            $scope.prefs.days);
+    }
+  }
   
   $http.get('subjects.json')
     .then(function (res) {
