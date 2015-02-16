@@ -15,7 +15,45 @@ app.service('timetabler', function () {
     });
     console.log('Valid timetables: ' + timetables.length);
     
-    
+    /**
+     * Returns a filtered array of timetables.
+     */
+    function filter(filterMethod, args) {
+      return timetables.filter(filterMethod, args);
+    }
+
+    /**
+     * Returns an array of timetables that match multiple filters.
+     *
+     * @param {Array<FilterInfo>} filters
+     * An array of FilterInfo objects
+     */
+    function filterMany(filters) {
+      return timetables.filter(function (timetable) {
+        for (var i = 0; i < filters.length; i++) {
+          var filter = filters[i];
+          var result = filter.method.call(filter.options, timetable);
+          if (!filter.method.call(filter.options, timetable)) {
+            return false;
+          }
+        }
+        return true;
+      });
+    }
+
+    /**
+     * Sorts the timetables.
+     */
+    function sort(compareMethod) {
+      timetables.sort(compareMethod);
+    }
+
+    return {
+      filter: filter,
+      filterMany: filterMany,
+      getTimetables: function () { return timetables; },
+      sort: sort
+    };
   }
   
   /**
@@ -333,5 +371,13 @@ app.service('timetabler', function () {
       getActivityGroups:  function () { return activityGroups; },
       getCode:            function () { return code; }
     };
+  }
+  
+  /**
+   * Contains the method and options for a filter.
+   */
+  this.FilterInfo = function(method, options) {
+    this.method = method;
+    this.options = options;
   }
 });
