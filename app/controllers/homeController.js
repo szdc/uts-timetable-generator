@@ -3,6 +3,13 @@
 app.controller('homeController', function homeController($scope, $http) {
   $scope.selectedSubject  = undefined;
   $scope.selectedSubjects = [];
+  $scope.prefs = {
+    days: {
+      count: 2,
+      exact: false,
+      options: [1, 2, 3, 4, 5]
+    }
+  };
   
   $scope.addSubject = function () {
     var subList = $scope.selectedSubjects,

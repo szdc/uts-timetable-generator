@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/css/styles.css">
   </head>
   <body>
-    <div class="container">
+    <div class="container" ng-controller="homeController">
       <div class="header">
         <h1>UTS Timetable Generator</h1>
       </div>
@@ -32,26 +32,11 @@
             <h3>Preferences</h3>
             <h4>Days at uni</h4>
             <div class="preference">
-              <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary btn-sm active">
-                  <input type="radio" name="filter-days" id="1" autocomplete="off" checked>1
-                </label>
-                <label class="btn btn-primary btn-sm">
-                  <input type="radio" name="filter-days" id="2" autocomplete="off">2
-                </label>
-                <label class="btn btn-primary btn-sm">
-                  <input type="radio" name="filter-days" id="3" autocomplete="off">3
-                </label>
-                <label class="btn btn-primary btn-sm">
-                  <input type="radio" name="filter-days" id="4" autocomplete="off">4
-                </label>
-                <label class="btn btn-primary btn-sm">
-                  <input type="radio" name="filter-days" id="5" autocomplete="off">5
-                </label>
-              </div>
+              <buttons-radio model='prefs.days.count' options='prefs.days.options'></buttons-radio>
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" value="">
+                  <input type="checkbox" ng-model="prefs.days.exact"
+                         ng-true-value="false" ng-false-value="true">
                   Include timetables with less days
                 </label>
               </div>
@@ -59,7 +44,7 @@
           </div>
         </div>
         <div class="col-md-8">
-          <div ng-controller="homeController">
+          <div>
             <h3>Subjects</h3>
             <form ng-submit="addSubject();">
               <div class="input-group">
@@ -98,5 +83,6 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="app/app.js"></script>
     <script src="app/controllers/homeController.js"></script>
+    <script src="app/directives/buttonsRadioDirective.js"></script>
   </body>
 </html>
