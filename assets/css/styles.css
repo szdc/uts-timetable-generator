@@ -17,9 +17,10 @@ h1 {
 }
 h3 {
   font-weight: 600;
+  margin-top: 15px;
 }
 .row {
-  padding: 0 15px;
+  padding: 0 15px 20px 15px;
 }
 .btn {
   background-color: #fff;
@@ -45,4 +46,10 @@ h3 {
 }
 .subject-list {
   margin-top: 15px;
+}
+.preference {
+  margin-left: 2px;
+}
+.preferences {
+  border-top: 1px solid #eee;
 }
