@@ -41,7 +41,32 @@ app.controller('homeController', function homeController($scope, $http) {
     if (index > -1) {
       $scope.selectedSubjects.splice(index, 1);
     }
-  }
+  };
+  
+  $scope.loadTimetables = function ($event) {
+    var yql =   'https://query.yahooapis.com/v1/public/yql?format=json&' +
+                'q={query}&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys',
+        query = 'select * from htmlpost where ' + 
+                'url="https://mysubjects.uts.edu.au/aplus2015/aptimetable?' +
+                'fun=unit_select&flat_timetable=yes" ' +
+                'and postdata="student_set={subjects}" ' +
+                'and xpath="//table[@cellspacing=\'1\']/tr"',
+        subjects = $scope.selectedSubjects,
+        subjectQueryString = subjects.reduce(function (queryString, subject) {
+          return queryString + '&assigned=' + subject.value;
+        }, '');
+    
+    query = query.replace('{subjects}', subjectQueryString);
+    var url = yql.replace('{query}', encodeURIComponent(query));
+    
+    $http.get(url)
+      .then(function (res) {
+        console.log(res.data);
+      }, function (err) {
+        console.log(err);
+      }
+    );
+  };
   
   $http.get('subjects.json')
     .then(function (res) {
