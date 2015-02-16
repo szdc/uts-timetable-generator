@@ -15,7 +15,9 @@ app.controller('homeController', function homeController($scope, $http) {
     var subList = $scope.selectedSubjects,
         subNew  = $scope.selectedSubject;
     
-    if (subList.indexOf(subNew) !== -1) {
+    if (typeof subNew === 'undefined') {
+      console.log('No subject selected');
+    } else if (subList.indexOf(subNew) !== -1) {
       console.log('Duplicate subject');
     } else {
       $scope.selectedSubjects.push($scope.selectedSubject);
