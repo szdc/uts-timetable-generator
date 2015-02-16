@@ -19,13 +19,22 @@ app.controller('homeController', function homeController($scope, $http) {
       console.log('No subject selected');
     } else if (subList.indexOf(subNew) !== -1) {
       console.log('Duplicate subject');
-    } else {
+    } else if (isSubject(subNew)) {
       $scope.selectedSubjects.push($scope.selectedSubject);
       console.log('Subjects: ' + $scope.selectedSubjects.length);
     }
     
     $scope.selectedSubject = undefined;
   };
+  
+  function isSubject(subject) {
+    var requiredKeys = ['name', 'value'],
+        actualKeys   = Object.keys(subject);
+    
+    return requiredKeys.every(function (key) {
+      return actualKeys.indexOf(key) !== -1;
+    });
+  }
   
   $scope.removeSubject = function (listItem) {
     var index = $scope.selectedSubjects.indexOf(listItem.subject);
