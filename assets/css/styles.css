@@ -2,14 +2,6 @@ body {
   color: #444;
   font-family: 'Open Sans', sans-serif;
 }
-.container {
-  max-width: 860px;
-}
-.header {
-  background-color: #0099CC;
-  border-bottom: 1px solid #eee;
-  padding: 50px 0px 0px 15px;
-}
 h1 {
   font-weight: 600;
   color: #fff;
@@ -18,6 +10,14 @@ h1 {
 h3 {
   font-weight: 600;
   margin-top: 15px;
+}
+.container {
+  max-width: 860px;
+}
+.header {
+  background-color: #0099CC;
+  border-bottom: 1px solid #eee;
+  padding: 50px 0px 0px 15px;
 }
 .row {
   padding: 0 15px 20px 15px;
@@ -50,6 +50,9 @@ h3 {
 .preference {
   margin-left: 2px;
 }
-.preferences {
-  border-top: 1px solid #eee;
+.preference .checkbox {
+  margin-bottom: 0px;
+}
+.semester, .preferences {
+  border-bottom: 1px solid #eee;
 }
