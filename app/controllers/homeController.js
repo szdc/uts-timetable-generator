@@ -6,6 +6,7 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
   
   $scope.selectedSubject  = undefined;
   $scope.selectedSubjects = [];
+  $scope.semester = 'autumn';
   $scope.prefs = {
     days: {
       count: 2,
