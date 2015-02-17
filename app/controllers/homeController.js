@@ -15,6 +15,16 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     }
   };
   
+  // Download the subject list.
+  $http.get('subjects.json')
+    .then(function (res) {
+      $scope.subjects = res.data;
+    }, function (err) {
+      $scope.subjects = [];
+      console.log(err);
+    }
+  );
+  
   /**
    * Filters the subject array to only subjects that
    * match ALL of the following criteria:
@@ -30,6 +40,9 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     };
   };
   
+  /**
+   * Adds the selected subject to the list.
+   */
   $scope.addSubject = function () {
     var subList = $scope.selectedSubjects,
         subNew  = $scope.selectedSubject;
@@ -44,29 +57,43 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     }
     
     $scope.selectedSubject = undefined;
+    
+    /**
+     * Determines if an object qualifies as
+     * a subject.
+     */
+    function isSubject(subject) {
+      var requiredKeys = ['name', 'value'],
+          actualKeys   = Object.keys(subject);
+
+      return requiredKeys.every(function (key) {
+        return actualKeys.indexOf(key) !== -1;
+      });
+    }
   };
   
-  function isSubject(subject) {
-    var requiredKeys = ['name', 'value'],
-        actualKeys   = Object.keys(subject);
-    
-    return requiredKeys.every(function (key) {
-      return actualKeys.indexOf(key) !== -1;
-    });
-  }
-  
+  /**
+   * Removes a subject from the list.
+   */
   $scope.removeSubject = function (listItem) {
     var index = $scope.selectedSubjects.indexOf(listItem);
-    if (index > -1) {
+    if (index !== -1) {
       $scope.selectedSubjects.splice(index, 1);
     }
   };
   
+  /**
+   * Downloads a list of timetables for the
+   * selected subjects.
+   */
   $scope.loadTimetables = function ($event) {
     var subjects = $scope.selectedSubjects;
     utsYqlService.getTimetableList(subjects, onTimetablesLoaded);
   };
   
+  /**
+   * Manipulates the timetable list after downloading.
+   */
   function onTimetablesLoaded(timetableList) {
     timetableList.sort(TimetableList.SortBy.HoursOnCampus);
     
@@ -81,6 +108,10 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     );
   }
   
+  /**
+   * Gets preference filters based on the user's 
+   * selection.
+   */
   function getPreferenceFilters() {
     return [getDays()];
     
@@ -90,12 +121,4 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
                             $scope.prefs.days);
     }
   }
-  
-  $http.get('subjects.json')
-    .then(function (res) {
-      $scope.subjects = res.data;
-    }, function (err) {
-      console.log(err);
-    }
-  );
 });
