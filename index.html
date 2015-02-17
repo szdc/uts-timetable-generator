@@ -20,9 +20,9 @@
             <h3>Semester</h3>
             <div class="btn-group">
               <label class="btn btn-primary active" ng-model="semester" 
-                     btn-radio="'autumn'">Autumn</label>
+                     btn-radio="'AUT'">Autumn</label>
               <label class="btn btn-primary" ng-model="semester" 
-                     btn-radio="'spring'">Spring</label>
+                     btn-radio="'SPR'">Spring</label>
             </div>
           </div>
           
@@ -48,7 +48,7 @@
               <div class="input-group">
                 <input type="text" 
                        ng-model="selectedSubject" 
-                       typeahead="subject as subject.name for subject in subjects | filter:{name: $viewValue, value: 'AUT'} | limitTo:8" 
+                       typeahead="subject as subject.name for subject in subjects | filter:subjectFilter($viewValue) | limitTo:8" 
                        class="form-control"
                        autocomplete="false" 
                        placeholder="Search for a subject...">

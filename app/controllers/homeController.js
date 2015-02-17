@@ -6,13 +6,28 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
   
   $scope.selectedSubject  = undefined;
   $scope.selectedSubjects = [];
-  $scope.semester = 'autumn';
+  $scope.semester = 'AUT';
   $scope.prefs = {
     days: {
       count: 2,
       exact: false,
       options: [1, 2, 3, 4, 5]
     }
+  };
+  
+  /**
+   * Filters the subject array to only subjects that
+   * match ALL of the following criteria:
+   * - Name contains the input string
+   * - Value contains the selected semester
+   * - Value is a standard (S) subject
+   */
+  $scope.subjectFilter = function (input) {
+    return function (subject) {
+      return subject.name.indexOf(input) !== -1 && 
+             subject.value.indexOf($scope.semester) !== -1 &&
+             subject.value.indexOf('_S') !== -1;
+    };
   };
   
   $scope.addSubject = function () {
