@@ -12,6 +12,10 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
       count: 2,
       exact: false,
       options: [1, 2, 3, 4, 5]
+    },
+    times: {
+      start:  "09:00",
+      finish: "18:00"
     }
   };
   

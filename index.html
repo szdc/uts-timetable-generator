@@ -67,6 +67,7 @@
       <div class="row results">
         <div class="col-md-4 filters">
           <h3>Filters</h3>
+          
           <h5>Number of days at uni</h5>
           <div class="preference">
             <buttons-radio model="prefs.days.count" options="prefs.days.options"></buttons-radio>
@@ -77,6 +78,12 @@
                 Include timetables with less days
               </label>
             </div>
+          </div>
+          
+          <h5>Time constraints</h5>
+          <div class="preference">
+            <select-time model="prefs.times.start" title="Earliest start"></select-time>
+            <select-time model="prefs.times.finish" title="Latest finish"></select-time>
           </div>
         </div>
         
@@ -93,6 +100,7 @@
     <script src="app/app.js"></script>
     <script src="app/controllers/homeController.js"></script>
     <script src="app/directives/buttonsRadioDirective.js"></script>
+    <script src="app/directives/selectTimeDirective.js"></script>
     <script src="app/services/timetableService.js"></script>
     <script src="app/services/utsYqlService.js"></script>
   </body>

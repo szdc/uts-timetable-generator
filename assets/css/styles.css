@@ -49,10 +49,26 @@ h3 {
 }
 .preference {
   margin-left: 2px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 .preference .checkbox {
   margin-bottom: 0px;
 }
-.preferences, .load-timetables {
+.preferences, .load-timetables, .preference {
   border-bottom: 1px solid #eee;
+}
+select.form-control {
+  display: inline-block;
+  height: 30px;
+  padding: 0 2px 1px 3px;
+  width: auto;
+}
+.time-select span {
+  display: inline-block;
+  width: 80px;
+}
+.time-select {
+  padding-bottom: 6px;
 }
