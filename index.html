@@ -25,23 +25,8 @@
                      btn-radio="'SPR'">Spring</label>
             </div>
           </div>
-          
-          <div class="row preferences">
-            <h3>Preferences</h3>
-            <h4>Days at uni</h4>
-            <div class="preference">
-              <buttons-radio model="prefs.days.count" options="prefs.days.options"></buttons-radio>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="prefs.days.exact"
-                         ng-true-value="false" ng-false-value="true">
-                  Include timetables with less days
-                </label>
-              </div>
-            </div>
-          </div>
         </div>
-        <div class="col-md-8 subjects">
+        <div class="col-md-7 subjects">
           <div>
             <h3>Subjects</h3>
             <form ng-submit="addSubject();">
@@ -70,7 +55,7 @@
         </div>
       </div>
       
-      <div class="row text-center">
+      <div class="row text-center load-timetables">
         <button type="button" class="btn btn-default" 
                 ng-click="loadTimetables($event)" 
                 ng-disabled="selectedSubjects.length === 0" 
@@ -79,8 +64,23 @@
         </button>
       </div>
       
-      <div class="row timetables">
-        <div class="col-md-12">
+      <div class="row results">
+        <div class="col-md-4 filters">
+          <h3>Filters</h3>
+          <h5>Number of days at uni</h5>
+          <div class="preference">
+            <buttons-radio model="prefs.days.count" options="prefs.days.options"></buttons-radio>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="prefs.days.exact"
+                       ng-true-value="false" ng-false-value="true">
+                Include timetables with less days
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-8 timetables">
           <h3>Timetables</h3>
         </div>
       </div>
