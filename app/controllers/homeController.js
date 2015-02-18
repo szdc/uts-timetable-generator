@@ -7,7 +7,7 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
   $scope.selectedSubject  = undefined;
   $scope.selectedSubjects = [];
   $scope.semester = 'AUT';
-  $scope.prefs = {
+  $scope.filters = {
     numberOfDays: {
       count: 2,
       exact: false,
@@ -109,9 +109,9 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     
     var filteredByDays = timetableList.filterMany(filters);
     console.log('Timetables spanning ' + 
-                $scope.prefs.numberOfDays.count + 
+                $scope.filters.numberOfDays.count + 
                 ' days' +
-                ($scope.prefs.numberOfDays.exact ? ' exactly: ' : ' or less: ') +
+                ($scope.filters.numberOfDays.exact ? ' exactly: ' : ' or less: ') +
                 filteredByDays.length
     );
   }
@@ -124,9 +124,9 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     return [getDays()];
     
     function getDays() {
-      var pref = $scope.prefs.numberOfDays;
+      var pref = $scope.filters.numberOfDays;
       return new FilterInfo(TimetableList.FilterBy.NumberOfDays,
-                            $scope.prefs.numberOfDays);
+                            $scope.filters.numberOfDays);
     }
   }
 });
