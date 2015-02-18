@@ -14,8 +14,12 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
       options: [1, 2, 3, 4, 5]
     },
     times: {
-      start:  "09:00",
-      finish: "18:00"
+      start:  '09:00',
+      finish: '18:00'
+    },
+    days: {
+      available: [true, true, true, true, true, false, false],
+      options: ['M', 'T', 'W', 'T', 'F', 'S', 'S']
     }
   };
   

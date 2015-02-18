@@ -85,7 +85,14 @@
             <select-time model="prefs.times.start" title="Earliest start"></select-time>
             <select-time model="prefs.times.finish" title="Latest finish"></select-time>
           </div>
+          
+          <h5>Availability</h5>
+          <div class="preference">
+            <buttons-checkbox model="prefs.days.available" options="prefs.days.options"></buttons-checkbox>
+          </div>
         </div>
+        
+
         
         <div class="col-md-8 timetables">
           <h3>Timetables</h3>
@@ -100,6 +107,7 @@
     <script src="app/app.js"></script>
     <script src="app/controllers/homeController.js"></script>
     <script src="app/directives/buttonsRadioDirective.js"></script>
+    <script src="app/directives/buttonsCheckboxDirective.js"></script>
     <script src="app/directives/selectTimeDirective.js"></script>
     <script src="app/services/timetableService.js"></script>
     <script src="app/services/utsYqlService.js"></script>
