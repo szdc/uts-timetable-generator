@@ -108,25 +108,37 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     var filters = getPreferenceFilters();
     
     var filteredByDays = timetableList.filterMany(filters);
-    console.log('Timetables spanning ' + 
-                $scope.filters.numberOfDays.count + 
-                ' days' +
-                ($scope.filters.numberOfDays.exact ? ' exactly: ' : ' or less: ') +
-                filteredByDays.length
-    );
+    
+    var days = $scope.filters.days;
+    var daysString = 'only on ' + JSON.stringify(days.available);
+    
+    var numberOfDays = $scope.filters.numberOfDays;
+    var numberOfDaysString = 'span ' + numberOfDays.count + ' days' +
+        ($scope.filters.numberOfDays.exact ? ' exactly: ' : ' or less');
+    
+    var output = 'Timetables ' + daysString + ' that ' + numberOfDaysString;
+    
+    console.log(output + ': ' + filteredByDays.length);
   }
   
   /**
-   * Gets preference filters based on the user's 
+   * Sets up filters based on the user's 
    * selection.
    */
   function getPreferenceFilters() {
-    return [getDays()];
+    return [getDays(), getNumberOfDays()];
     
     function getDays() {
-      var pref = $scope.filters.numberOfDays;
-      return new FilterInfo(TimetableList.FilterBy.NumberOfDays,
-                            $scope.filters.numberOfDays);
+      var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      var filterInfo = days.filter(function (day, i) {
+        return $scope.filters.days.available[i];
+      });
+      return new FilterInfo(TimetableList.FilterBy.Days, {days: filterInfo});
+    }
+    
+    function getNumberOfDays() {
+      var filterInfo = $scope.filters.numberOfDays;
+      return new FilterInfo(TimetableList.FilterBy.NumberOfDays, filterInfo);
     }
   }
 });
