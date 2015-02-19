@@ -126,7 +126,12 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
    * selection.
    */
   function getPreferenceFilters() {
-    return [getDays(), getNumberOfDays()];
+    return [
+      getDays(), 
+      getNumberOfDays(), 
+      getStartConstraint(),
+      getFinishConstraint()
+    ];
     
     function getDays() {
       var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -139,6 +144,24 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     function getNumberOfDays() {
       var filterInfo = $scope.filters.numberOfDays;
       return new FilterInfo(TimetableList.FilterBy.NumberOfDays, filterInfo);
+    }
+    
+    function getStartConstraint() {
+      var startTime = $scope.filters.times.start.replace(':', '');
+      startTime = parseInt(startTime);
+      return getTimeConstraint(startTime, 'start');
+    }
+    
+    function getFinishConstraint() {
+      var finishTime = $scope.filters.times.finish.replace(':', '');
+      finishTime = parseInt(finishTime);
+      return getTimeConstraint(finishTime, 'finish');
+    }
+    
+    function getTimeConstraint(time, constraint) {
+      var filterInfo = {time: time, constraint: constraint};
+      return new FilterInfo(TimetableList.FilterBy.TimeConstraint,
+                           filterInfo);
     }
   }
 });
