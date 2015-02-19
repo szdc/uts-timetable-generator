@@ -86,7 +86,11 @@
         </div>
         
         <div class="col-md-8 timetables">
-          <h3>Timetables <span ng-show="timetables.length > 0">({{timetables.length}})</span></h3>
+          <h3>Timetables 
+            <span ng-show="timetables.length > 0">({{timetables.length}})</span>
+          </h3>
+          
+          <timetable model="timetableLayout"></timetable>
         </div>
       </div>
     </div>
@@ -100,6 +104,7 @@
     <script src="app/directives/buttonsRadioDirective.js"></script>
     <script src="app/directives/buttonsCheckboxDirective.js"></script>
     <script src="app/directives/selectTimeDirective.js"></script>
+    <script src="app/directives/timetableDirective.js"></script>
     <script src="app/services/timetableService.js"></script>
     <script src="app/services/utsYqlService.js"></script>
   </body>

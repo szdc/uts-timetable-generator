@@ -1,0 +1,14 @@
+<table class="table table-bordered">
+  <thead>
+    <th style="width: {{100 / (model.days.length + 1)}}%"></th>
+    <th ng-repeat="day in model.days" style="width: {{100 / (model.days.length + 1)}}%">{{day}}</th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="time in intervals">
+      <td ng-if="time.getMinutes() === 0" rowspan="{{intervalsPerHour}}">
+        {{time | date:'HH:mm'}}
+      </td>
+      <td ng-repeat="day in model.days" id="{{day + time.get24hrTime()}}"></td>
+    </tr>
+  </tbody>
+</table>

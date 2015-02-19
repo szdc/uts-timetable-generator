@@ -24,6 +24,15 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
   };
   $scope.timetables = [];
   
+  $scope.timetableLayout = {
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    times: {
+      start: '09:00',
+      finish: '18:00'
+    },
+    interval: 15
+  };
+  
   // Download the subject list.
   $http.get('subjects.json')
     .then(function (res) {
