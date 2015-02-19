@@ -106,19 +106,39 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     timetableList.sort(TimetableList.SortBy.HoursOnCampus);
     
     var filters = getPreferenceFilters();
+    var filteredTimetables = timetableList.filterMany(filters);
     
-    var filteredByDays = timetableList.filterMany(filters);
+    console.log(getFilterString(filteredTimetables.length));
+  }
+  
+  /**
+   * Gets a string representation of the filters set
+   * by the user.
+   */
+  function getFilterString(count) {
+    return 'There are ' + count + ' timetables only on ' + getDaysString() + 
+      ' that span ' + getNumberOfDaysString() + ' day(s) or less' +
+      ' between ' + getTimeConstraintsString() + '.';
     
-    var days = $scope.filters.days;
-    var daysString = 'only on ' + JSON.stringify(days.available);
+    function getDaysString() {
+      var days       = $scope.filters.days.available,
+          dayNames   = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      
+      var daysOutput = dayNames.filter(function (day, i) {
+        return days[i];
+      }).join('/');
+      
+      return daysOutput;
+    }
     
-    var numberOfDays = $scope.filters.numberOfDays;
-    var numberOfDaysString = 'span ' + numberOfDays.count + ' days' +
-        ($scope.filters.numberOfDays.exact ? ' exactly: ' : ' or less');
+    function getNumberOfDaysString() {
+      return $scope.filters.numberOfDays.count;
+    }
     
-    var output = 'Timetables ' + daysString + ' that ' + numberOfDaysString;
-    
-    console.log(output + ': ' + filteredByDays.length);
+    function getTimeConstraintsString() {
+      var times = $scope.filters.times;
+      return times.start + ' and ' + times.finish;
+    }
   }
   
   /**
