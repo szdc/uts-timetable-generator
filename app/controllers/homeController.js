@@ -133,6 +133,9 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
       getFinishConstraint()
     ];
     
+    /**
+     * Gets the days selected.
+     */
     function getDays() {
       var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       var filterInfo = days.filter(function (day, i) {
@@ -141,23 +144,35 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
       return new FilterInfo(TimetableList.FilterBy.Days, {days: filterInfo});
     }
     
+    /**
+     * Gets the maximum number of days selected.
+     */
     function getNumberOfDays() {
       var filterInfo = $scope.filters.numberOfDays;
       return new FilterInfo(TimetableList.FilterBy.NumberOfDays, filterInfo);
     }
     
+    /**
+     * Gets the earliest start time selected.
+     */
     function getStartConstraint() {
       var startTime = $scope.filters.times.start.replace(':', '');
       startTime = parseInt(startTime);
       return getTimeConstraint(startTime, 'start');
     }
     
+    /**
+     * Gets the latest finish time selected.
+     */
     function getFinishConstraint() {
       var finishTime = $scope.filters.times.finish.replace(':', '');
       finishTime = parseInt(finishTime);
       return getTimeConstraint(finishTime, 'finish');
     }
     
+    /**
+     * Gets a FilterInfo object for a time constraint.
+     */
     function getTimeConstraint(time, constraint) {
       var filterInfo = {time: time, constraint: constraint};
       return new FilterInfo(TimetableList.FilterBy.TimeConstraint,
