@@ -22,6 +22,7 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
       options: ['M', 'T', 'W', 'T', 'F', 'S', 'S']
     }
   };
+  $scope.timetables = [];
   
   // Download the subject list.
   $http.get('subjects.json')
@@ -107,6 +108,7 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     
     var filters = getPreferenceFilters();
     var filteredTimetables = timetableList.filterMany(filters);
+    $scope.timetables = filteredTimetables;
     
     console.log(getFilterString(filteredTimetables.length));
   }
