@@ -72,3 +72,6 @@ select.form-control {
 .time-select {
   padding-bottom: 6px;
 }
+table.table.timetable td   {
+  padding: 4px 6px;
+}
