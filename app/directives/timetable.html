@@ -1,8 +1,8 @@
 <table class="table table-bordered timetable">
   <thead>
-    <th style="width: {{100 / (model.days.length + 1)}}%"></th>
-    <th ng-repeat="day in model.days" 
-        style="width: {{100 / (model.days.length + 1)}}%">
+    <th style="width: {{100 / (layout.days.length + 1)}}%"></th>
+    <th ng-repeat="day in layout.days" 
+        style="width: {{100 / (layout.days.length + 1)}}%">
       {{day}}
     </th>
   </thead>
@@ -11,7 +11,7 @@
       <td ng-if="time.getMinutes() === 0" rowspan="{{intervalsPerHour}}">
         {{time | date:'HH:mm'}}
       </td>
-      <td ng-repeat="day in model.days" id="{{day + time.get24hrTime()}}"></td>
+      <td ng-repeat="day in layout.days" id="{{day + time.get24hrTime()}}"></td>
     </tr>
   </tbody>
 </table>

@@ -95,7 +95,7 @@ app.service('utsYqlService', function ($http, timetabler) {
       "numbers":    [cells[1]],
       "day":        cells[2],
       "startTime":  parseInt(cells[3].replace(':', '')),
-      "duration":   cells[4],
+      "duration":   parseInt(cells[4]),
       "finishTime": new Date('1/1/2015 ' + cells[3]).addMinutes(cells[4]).get24hrTime(),
       "subject":    subject
     };
