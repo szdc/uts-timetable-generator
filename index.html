@@ -90,7 +90,10 @@
             <span ng-show="timetables.length > 0">({{timetables.length}})</span>
           </h3>
           
-          <timetable layout="timetableLayout" timetables="timetables"></timetable>
+          <div ng-repeat="timetable in timetables track by $index">
+            <timetable layout="timetableLayout" timetable="timetable" id="timetable-{{$index}}"></timetable>
+          </div>
+          
         </div>
       </div>
     </div>

@@ -1,32 +1,27 @@
 app.directive('timetable', function() {
   var directiveDefinitionObject = {
     restrict: 'E',
-    scope: { layout: '=', timetables: '='},
+    scope: { layout: '=', timetable: '=', id: '@' },
     templateUrl: 'app/directives/timetable.html',
-    controller: function ($scope) {
+    controller: function ($scope, $timeout) {
       $scope.intervals = getIntervals();
       $scope.intervalsPerHour = parseInt(60 / $scope.layout.interval);
-
-      /**
-       * Adds a timetable to the UI when the timetables array
-       * is modified.
-       */
-      $scope.$watch('timetables', function (newTimetables) {
-        if (newTimetables.length === 0) return;
-        
-        var timetable = newTimetables[0];
-        
-        var activities = timetable.getActivities();
+      
+      $scope.$on('ngRepeatFinished', function () {
+        var activities = $scope.timetable.getActivities();
         activities.forEach(addActivity);
       });
       
+
       /**
        * Adds an activity to the timetable.
        */
       function addActivity(activity) {
         activity = activity.getDetails();
+
         var rowspan  = parseInt(activity.duration / $scope.layout.interval),
-            td = angular.element('#' + activity.day + activity.startTime);
+            td = angular.element('#' + $scope.id + ' ' +
+                                 '.' + activity.day + activity.startTime);
           
         td.parent().nextAll().slice(0, rowspan - 1).each(function (i) {
           $(this).children('td:last').remove();
@@ -60,4 +55,17 @@ app.directive('timetable', function() {
     }
   };
   return directiveDefinitionObject;
+});
+
+app.directive('onFinishRender', function ($timeout) {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attr) {
+      if (scope.$last === true) {
+        $timeout(function () {
+          scope.$emit('ngRepeatFinished');
+        });
+      }
+    }
+  }
 });

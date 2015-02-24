@@ -7,11 +7,11 @@
     </th>
   </thead>
   <tbody>
-    <tr ng-repeat="time in intervals">
+    <tr ng-repeat="time in intervals" on-finish-render="ngRepeatFinished">
       <td ng-if="time.getMinutes() === 0" rowspan="{{intervalsPerHour}}">
         {{time | date:'HH:mm'}}
       </td>
-      <td ng-repeat="day in layout.days" id="{{day + time.get24hrTime()}}"></td>
+      <td ng-repeat="day in layout.days" class="{{day + time.get24hrTime()}}"></td>
     </tr>
   </tbody>
 </table>
