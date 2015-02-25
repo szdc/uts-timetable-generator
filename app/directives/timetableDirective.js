@@ -20,13 +20,32 @@ app.directive('timetable', function() {
         activity = activity.getDetails();
 
         var rowspan  = parseInt(activity.duration / $scope.layout.interval),
-            td = angular.element('#' + $scope.id + ' ' +
-                                 '.' + activity.day + activity.startTime);
+            selector = '#' + $scope.id + ' ' + 
+                       '.' + activity.day + activity.startTime,
+            td = angular.element(selector);
           
         td.parent().nextAll().slice(0, rowspan - 1).each(function (i) {
           $(this).children('td:last').remove();
         });
         td.attr('rowspan', rowspan);
+        
+        td.append(getActivityHTML(activity));
+      }
+      
+      /**
+       * Gets the activity information in HTML format.
+       */
+      function getActivityHTML(activity) {
+        return getParagraphs([
+          activity.subject.getCode(),
+          activity.type
+        ]);
+      }
+      
+      function getParagraphs(textArr) {
+        return textArr.reduce(function (output, text) {
+          return output + '<p>' + text + '</p>';
+        }, '');
       }
       
       /**

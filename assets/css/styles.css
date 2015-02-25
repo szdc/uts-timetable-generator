@@ -75,3 +75,8 @@ select.form-control {
 table.table.timetable td   {
   padding: 4px 6px;
 }
+table.table.timetable p {
+  font-size: 70%;
+  padding: 0px;
+  margin: -2px -2px;
+}
