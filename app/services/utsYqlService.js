@@ -88,7 +88,10 @@ app.service('utsYqlService', function ($http, timetabler) {
       if (td !== null) return td.p;
     });
     
-    if (cells[0].toLowerCase().indexOf('ups') !== -1) return null;
+    var invalidActivityTypes = ['ups', 'drp'],
+        activityType = cells[0].toLowerCase().substr(0, 3);    
+    
+    if (invalidActivityTypes.indexOf(activityType) !== -1) return null;
     
     var details = {
       "type":       cells[0],
