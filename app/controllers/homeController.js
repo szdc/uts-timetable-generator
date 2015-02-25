@@ -105,6 +105,7 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
    * selected subjects.
    */
   $scope.loadTimetables = function ($event) {
+    $scope.timetables = [];
     var subjects = $scope.selectedSubjects;
     utsYqlService.getTimetableList(subjects, onTimetablesLoaded);
   };
@@ -117,8 +118,8 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
     
     var filters = getPreferenceFilters();
     var filteredTimetables = timetableList.filterMany(filters);
-    $scope.timetables = filteredTimetables;
     
+    $scope.timetables = filteredTimetables.slice(0, 2);
     console.log(getFilterString(filteredTimetables.length));
   }
   
