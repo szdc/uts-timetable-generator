@@ -1,3 +1,4 @@
 UTS Timetable Generator
 =======================
-Currently a Greasemonkey/Tampermonkey script that generates valid timetables given a number of UTS subjects.
+Current state:
+![Current state](http://i.imgur.com/Bgies6n.png)
