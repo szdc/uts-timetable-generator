@@ -21,11 +21,12 @@ app.directive('timetable', function() {
 
         var rowspan  = parseInt(activity.duration / $scope.layout.interval),
             selector = '#' + $scope.id + ' ' + 
-                       '.' + activity.day + activity.startTime,
+                       '.' + activity.day + 
+                       '.' + activity.startTime,
             td = angular.element(selector);
           
         td.parent().nextAll().slice(0, rowspan - 1).each(function (i) {
-          $(this).children('td:last').remove();
+          $(this).children('td.' + activity.day).hide();
         });
         td.attr('rowspan', rowspan);
         
