@@ -80,3 +80,21 @@ table.table.timetable p {
   padding: 0px;
   margin: -2px -2px;
 }
+.colour0 {
+  background-color: #e59090;
+}
+.colour1 {
+  background-color: #90e5a4;
+}
+.colour2 {
+  background-color: #90c4e5;
+}
+.colour3 {
+  background-color: #e590d1;
+}
+.colour4 {
+  background-color: #d1e590;
+}
+table.timetable td.activity {
+  font-weight: bold;
+}

@@ -4,6 +4,8 @@ app.directive('timetable', function() {
     scope: { layout: '=', timetable: '=', id: '@' },
     templateUrl: 'app/directives/timetable.html',
     controller: function ($scope, $timeout) {
+      var subjectCodes = [];
+      
       $scope.intervals = getIntervals();
       $scope.intervalsPerHour = parseInt(60 / $scope.layout.interval);
       
@@ -12,7 +14,6 @@ app.directive('timetable', function() {
         activities.forEach(addActivity);
       });
       
-
       /**
        * Adds an activity to the timetable.
        */
@@ -28,8 +29,22 @@ app.directive('timetable', function() {
           $(this).children('td:last').remove();
         });
         td.attr('rowspan', rowspan);
+        td.addClass('colour' + getColourId(activity.subject.getCode()));
+        td.addClass('activity');
         
         td.append(getActivityHTML(activity));
+      }
+      
+      /**
+       * Gets the colour associated with a subject code.
+       */
+      function getColourId(subjectCode) {
+        var id = subjectCodes.indexOf(subjectCode);
+        if (id === -1) {
+          subjectCodes.push(subjectCode);
+          id = subjectCodes.length - 1;
+        }
+        return id;
       }
       
       /**
@@ -42,6 +57,10 @@ app.directive('timetable', function() {
         ]);
       }
       
+      /**
+       * Wraps paragraph tags around an array
+       * and reduces it to a single string.
+       */
       function getParagraphs(textArr) {
         return textArr.reduce(function (output, text) {
           return output + '<p>' + text + '</p>';
@@ -57,7 +76,7 @@ app.directive('timetable', function() {
             finishTime  = dateFromTime(layout.times.finish).get24hrTime(),
             interval    = layout.interval,
             intervals   = [];
-      
+
         do {
           intervals.push(startDate);
         } while((startDate = startDate.addMinutes(interval)).get24hrTime() < finishTime);
