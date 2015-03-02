@@ -106,6 +106,7 @@ app.controller('homeController', function ($scope, $http, timetabler, utsYqlServ
    */
   $scope.loadTimetables = function ($event) {
     $scope.timetables = [];
+    $scope.timetableLayout.times = $scope.filters.times;
     var subjects = $scope.selectedSubjects;
     utsYqlService.getTimetableList(subjects, onTimetablesLoaded);
   };
